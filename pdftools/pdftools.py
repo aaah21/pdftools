@@ -25,7 +25,6 @@ def check_args(args):
         arg_sw = False
     else:
         arg_sw = True
-
     return [arg_sw, ar_file, ar_copies]
 
 
@@ -72,12 +71,15 @@ def main(argvs):
         exit()
 
     main_pdf_file = chk_arg[1]
-    main_copies =  chk_arg[2]
-    try:
-        copy(main_pdf_file,main_copies)
-    except:
-        print("Some problems copying files...")
-
+    main_copies =  int(chk_arg[2])
+    print("main")
+    print(main_copies)
+    print
+    #try:
+    copy(main_pdf_file,main_copies)
+    #except:
+    print("Some problems copying files...")
+    # copy(main_pdf_file,20)
 
     
 
