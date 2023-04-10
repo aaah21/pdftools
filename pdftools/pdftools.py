@@ -60,7 +60,7 @@ def copy(filename,copies):
 
         writer.add_page(selected_page)
         for copy in range(copies):
-            filename_output = f"{filepdf}_dir\{filepdf}-page-{page_number+1}-copy-{copy}.pdf"
+            filename_output = f"{filepdf}_dir\{filepdf}-page-{page_number+1}-copy-{copy+1}.pdf"
             out = open(filename_output,"wb")
             writer.write(out)
             print("Created  a pdf:{}".format(filename_output))
@@ -73,15 +73,13 @@ def main(argvs):
 
     main_pdf_file = chk_arg[1]
     main_copies =  chk_arg[2]
-    #try:
-    #    copy(main_pdf_file,20)
-    #except:
-    #    print("Some problems copying files...")
+    try:
+        copy(main_pdf_file,main_copies)
+    except:
+        print("Some problems copying files...")
 
 
-    copy(main_pdf_file,20)
-    print("Some problems copying files...")
-
+    
 
 
 
