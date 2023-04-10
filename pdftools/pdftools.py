@@ -72,15 +72,11 @@ def main(argvs):
 
     main_pdf_file = chk_arg[1]
     main_copies =  int(chk_arg[2])
-    print("main")
-    print(main_copies)
-    print
-    #try:
-    copy(main_pdf_file,main_copies)
-    #except:
-    print("Some problems copying files...")
-    # copy(main_pdf_file,20)
-
+    try:
+        copy(main_pdf_file,main_copies)
+    except:
+        print("Some problems copying files...")
+    
     
 
 
