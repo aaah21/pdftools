@@ -51,15 +51,10 @@ def copy(filename,copies):
     for page_number in range(0, len(reader.pages)):
         writer = pdf.PdfWriter()
         selected_page = reader.pages[page_number]
-        #find_currency = re.findall('\$\d[.,]+\d+',selected_page.extract_text())
-        #find_currency = re.findall('?\$\d[.,]+\d+',selected_page.extract_text())
-        #print("Page {} found {}".format(page_number+1,find_currency))
-        #if (page_number == 2):
-        #    print(selected_page.extract_text())
 
         writer.add_page(selected_page)
         for copy in range(copies):
-            filename_output = f"{filepdf}_dir\{filepdf}-page-{page_number+1}-copy-{copy+1}.pdf"
+            filename_output = f"{filepdf}_dir\{filepdf}-p{page_number+1}-c{copy+1}.pdf"
             out = open(filename_output,"wb")
             writer.write(out)
             print("Created  a pdf:{}".format(filename_output))
@@ -76,19 +71,7 @@ def main(argvs):
         copy(main_pdf_file,main_copies)
     except:
         print("Some problems copying files...")
-    
-    
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
     main(sys.argv)
-
-
-
 
