@@ -11,8 +11,11 @@ def check_args(args):
 	#
 	#			[1] String. 	File name.
     #           [2] integer.    # of copies
+    #
+
 
     ar_file = ''
+    ar_copies = 0
     arg_sw = False
     for i in range(0, len(args)):
         y = args[i].lower()
@@ -39,11 +42,11 @@ def print_arg():
     print('-n:#-of-copies')
     print()
 
-def copy(filename,copies):
+def copy(filename,copies_arg):
     filepdf=filename
+    currency_regex = "-?[$]\d+[,.]\d+"
     file = open(filepdf,"rb")
     reader = pdf.PdfReader(file)
-    page = reader.pages[0]
     try:
         os.mkdir(filepdf+"_dir")
     except:
@@ -51,13 +54,21 @@ def copy(filename,copies):
     for page_number in range(0, len(reader.pages)):
         writer = pdf.PdfWriter()
         selected_page = reader.pages[page_number]
-
+        page_text = selected_page.extract_text()
+        currency_found = re.findall(currency_regex,page_text)
+        if copies_arg == 0:
+            copies = len(currency_found)
+        else:
+            copies = copies_arg
+        #if page_number == 2:
+        #    print(page_text)
+        #    print(currency_found)
         writer.add_page(selected_page)
         for copy in range(copies):
-            filename_output = f"{filepdf}_dir\{filepdf}-p{page_number+1}-c{copy+1}.pdf"
+            filename_output = f"{filepdf}_dir\p{page_number+1}-c{copy+1}.pdf"
             out = open(filename_output,"wb")
             writer.write(out)
-            print("Created  a pdf:{}".format(filename_output))
+            print("Created a pdf:{}".format(filename_output))
 
 def main(argvs):
     chk_arg = check_args(argvs)
@@ -69,8 +80,8 @@ def main(argvs):
     main_copies =  int(chk_arg[2])
     try:
         copy(main_pdf_file,main_copies)
-    except:
-        print("Some problems copying files...")
+    except Exception as e:
+        print("Some problems copying files..."+str(e))
 
 if __name__ == "__main__":
     main(sys.argv)
