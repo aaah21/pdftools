@@ -2,6 +2,9 @@ import PyPDF2 as pdf
 import re
 import os
 import sys
+import fitz
+from io import BytesIO
+
 
 
 def check_args(args):
@@ -47,6 +50,7 @@ def copy(filename,copies_arg):
     currency_regex = "-?\d+[,.]\d+"
     file = open(filepdf,"rb")
     reader = pdf.PdfReader(file)
+
     try:
         os.mkdir(filepdf+"_dir")
     except:
@@ -55,11 +59,16 @@ def copy(filename,copies_arg):
         writer = pdf.PdfWriter()
         selected_page = reader.pages[page_number]
         page_text = selected_page.extract_text()
+        page_lines = page_text.split('\n')
         currency_found = re.findall(currency_regex,page_text)
         if copies_arg == 0:
             copies = len(currency_found)
         else:
             copies = copies_arg
+        if page_number == 2:
+            for i in page_lines:
+                print(i)
+
         #if page_number == 2:
         #    print(page_text)
         #    print(currency_found)
@@ -67,8 +76,45 @@ def copy(filename,copies_arg):
         for copy in range(copies):
             filename_output = f"{filepdf}_dir\p{page_number+1}-c{copy+1}.pdf"
             out = open(filename_output,"wb")
+            
             writer.write(out)
             print("Created a pdf:{}".format(filename_output))
+
+def copy2(filename,copies_arg):
+    currency_regex = "-?\d+[,.]\d+"
+    reader = fitz.open(filename)
+    output_buffer = BytesIO()
+    pages = reader.page_count
+
+    try:
+        os.mkdir(filename+"_dir")
+    except:
+        print("Directory alreday Exists")
+    for page_number in range(pages):
+        print("{} {}".format(page_number,pages))
+        writer = fitz.open(filename)
+        copy  = 0
+        writer.select(list(range(page_number,page_number+1)))
+        selected_page = writer[0]
+        page_text = selected_page.get_text()
+        page_lines = page_text.split('\n')
+        for line in page_lines:
+            currency_found = re.findall(currency_regex,line)
+            if currency_found:
+                print("{} {}".format(line,currency_found))
+                copy = copy +1
+                writer = fitz.open(filename)
+                writer.select(list(range(page_number,page_number+1)))
+                selected_page = writer[0]
+                highlight = selected_page.add_highlight_annot(selected_page.search_for(currency_found[0]))
+                highlight.update()
+                filename_output = f"{filename}_dir\p{page_number+1}-c{copy} {currency_found[0]}.pdf"
+                writer.save(filename_output)
+                
+                print("Created a pdf:{}".format(filename_output))
+
+
+
 
 def main(argvs):
     chk_arg = check_args(argvs)
@@ -78,8 +124,9 @@ def main(argvs):
 
     main_pdf_file = chk_arg[1]
     main_copies =  int(chk_arg[2])
+
     try:
-        copy(main_pdf_file,main_copies)
+        copy2(main_pdf_file,main_copies)
     except Exception as e:
         print("Some problems copying files..."+str(e))
 
