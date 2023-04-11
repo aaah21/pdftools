@@ -44,7 +44,7 @@ def print_arg():
 
 def copy(filename,copies_arg):
     filepdf=filename
-    currency_regex = "-?[$]\d+[,.]\d+"
+    currency_regex = "-?\d+[,.]\d+"
     file = open(filepdf,"rb")
     reader = pdf.PdfReader(file)
     try:
