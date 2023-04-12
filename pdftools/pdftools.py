@@ -91,7 +91,7 @@ def copy2(filename,copies_arg):
     except:
         print("Directory alreday Exists")
     for page_number in range(pages):
-        print("{} {}".format(page_number,pages))
+        #print("{} {}".format(page_number,pages))
         writer = fitz.open(filename)
         copy  = 0
         writer.select(list(range(page_number,page_number+1)))
@@ -101,7 +101,7 @@ def copy2(filename,copies_arg):
         for line in page_lines:
             currency_found = re.findall(currency_regex,line)
             if currency_found:
-                print("{} {}".format(line,currency_found))
+                #print("{} {}".format(line,currency_found))
                 copy = copy +1
                 writer = fitz.open(filename)
                 writer.select(list(range(page_number,page_number+1)))
