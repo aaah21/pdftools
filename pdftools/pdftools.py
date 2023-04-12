@@ -98,15 +98,20 @@ def copy2(filename,copies_arg):
         selected_page = writer[0]
         page_text = selected_page.get_text()
         page_lines = page_text.split('\n')
-        for line in page_lines:
-            currency_found = re.findall(currency_regex,line)
+        for line in selected_page.get_text("blocks"):
+            currency_found = re.findall(currency_regex,line[4])
             if currency_found:
                 #print("{} {}".format(line,currency_found))
+                x1 = 30
+                y1 = line[1]-4
+                x2 = line[2]+20
+                y2 = line[3]+4
+                r1 = fitz.Rect(x1,y1,x2,y2)
                 copy = copy +1
                 writer = fitz.open(filename)
                 writer.select(list(range(page_number,page_number+1)))
                 selected_page = writer[0]
-                highlight = selected_page.add_highlight_annot(selected_page.search_for(currency_found[0]))
+                highlight = selected_page.add_highlight_annot(r1)
                 highlight.update()
                 filename_output = f"{filename}_dir\p{page_number+1}-c{copy} {currency_found[0]}.pdf"
                 writer.save(filename_output)
